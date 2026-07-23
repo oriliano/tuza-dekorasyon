@@ -44,7 +44,7 @@ export function Header() {
       }`}
     >
       <div className="container-tuza flex h-[72px] items-center justify-between">
-        <a href="/" className="group flex items-center gap-2.5" aria-label={site.name}>
+        <a href="/" className="group flex items-center gap-2.5 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-clay/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream" aria-label={site.name}>
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-clay text-white shadow-[0_6px_18px_-6px_rgba(194,65,12,0.7)] transition-transform group-hover:rotate-3">
             <span className="font-serif text-lg font-semibold leading-none">T</span>
           </span>
@@ -58,19 +58,19 @@ export function Header() {
 
         {/* Masaüstü nav */}
         <nav className="hidden items-center gap-1 lg:flex">
-          {nav.map((n) => (
-            <a
-              key={n.href}
-              href={n.href}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                isActive(urlPathname, n.href)
-                  ? "text-clay"
-                  : "text-espresso-soft hover:text-clay"
-              }`}
-            >
-              {n.label}
-            </a>
-          ))}
+          {nav.map((n) => {
+            const active = isActive(urlPathname, n.href);
+            return (
+              <a
+                key={n.href}
+                href={n.href}
+                aria-current={active ? "page" : undefined}
+                className={`nav-link ${active ? "nav-link-active" : "nav-link-idle"}`}
+              >
+                {n.label}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -87,7 +87,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-espresso lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-espresso focus:outline-none focus-visible:ring-2 focus-visible:ring-clay/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream lg:hidden"
             aria-label={open ? "Menüyü kapat" : "Menüyü aç"}
             aria-expanded={open}
           >

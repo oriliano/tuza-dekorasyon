@@ -128,7 +128,7 @@ export default function Page() {
                       <select
                         value={form.service}
                         onChange={update("service")}
-                        className="w-full rounded-xl border border-espresso/12 bg-cream/40 px-4 py-3 text-sm text-espresso outline-none transition focus:border-clay/50 focus:ring-2 focus:ring-clay/15"
+                        className="field-control"
                       >
                         <option value="">Seçiniz</option>
                         {services.map((s) => (
@@ -145,7 +145,7 @@ export default function Page() {
                       required
                       rows={5}
                       placeholder="Projeniz hakkında kısaca bilgi verin..."
-                      className="w-full resize-none rounded-xl border border-espresso/12 bg-cream/40 px-4 py-3 text-sm text-espresso outline-none transition placeholder:text-espresso-muted/60 focus:border-clay/50 focus:ring-2 focus:ring-clay/15"
+                      className="field-control resize-none"
                     />
                   </div>
 
@@ -177,7 +177,7 @@ function Field({ label, type = "text", ...rest }) {
       <input
         type={type}
         {...rest}
-        className="w-full rounded-xl border border-espresso/12 bg-cream/40 px-4 py-3 text-sm text-espresso outline-none transition placeholder:text-espresso-muted/60 focus:border-clay/50 focus:ring-2 focus:ring-clay/15"
+        className="field-control"
       />
     </div>
   );

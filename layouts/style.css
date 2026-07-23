@@ -80,10 +80,37 @@
   }
 
   .card {
-    @apply rounded-2xl bg-white shadow-card ring-1 ring-espresso/5 transition-all duration-300;
+    @apply rounded-2xl bg-white shadow-card ring-1 ring-espresso/5 transition-all duration-300
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-clay/40
+           focus-visible:ring-offset-2 focus-visible:ring-offset-cream;
   }
   .card-hover {
     @apply hover:-translate-y-1 hover:shadow-soft hover:ring-clay/15;
+  }
+
+  /* Navigasyon linki — tutarlı focus + aktif göstergesi */
+  .nav-link {
+    @apply relative rounded-full px-4 py-2 text-sm font-medium transition-colors
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-clay/40
+           focus-visible:ring-offset-2 focus-visible:ring-offset-cream;
+  }
+  .nav-link-active {
+    @apply text-clay;
+  }
+  .nav-link-active::after {
+    content: "";
+    @apply absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-clay;
+  }
+  .nav-link-idle {
+    @apply text-espresso-soft hover:text-clay;
+  }
+
+  /* Form kontrolü — dokunmatik hedef ≥ 44px, tutarlı focus */
+  .field-control {
+    @apply w-full min-h-[46px] rounded-xl border border-espresso/10 bg-cream/40 px-4 py-3
+           text-sm text-espresso outline-none transition
+           placeholder:text-espresso-muted/60
+           focus:border-clay/50 focus:ring-2 focus:ring-clay/15;
   }
 
   .link-underline {
