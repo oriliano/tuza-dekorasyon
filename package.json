@@ -1,0 +1,46 @@
+{
+  "name": "tuza-dekorasyon",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Tuza Dekorasyon - Gaziantep boya, mantolama, dekorasyon firması sitesi (akuport stack ikizi)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node ./server/index.js",
+    "build": "vite build",
+    "preview": "cross-env NODE_ENV=production node ./server/index.js",
+    "start": "cross-env NODE_ENV=production node ./server/index.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node ./db/migrate.js",
+    "db:push": "drizzle-kit push",
+    "db:seed": "node ./db/seed.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.36.4",
+    "express": "^4.21.1",
+    "multer": "^2.2.0",
+    "postgres": "^3.4.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sirv": "^3.0.0",
+    "vike": "^0.4.205",
+    "vike-react": "^0.5.11"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.28.1",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "vite": "^6.4.3"
+  }
+}

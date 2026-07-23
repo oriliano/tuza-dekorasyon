@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --clay: #C2410C;
+    --clay-soft: #DB6B3A;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-cream text-espresso font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif text-espresso;
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--clay);
+    color: #fff;
+  }
+
+  /* İç HTML içeriği (blog gövdesi) tipografisi */
+  .prose-tuza {
+    @apply text-espresso-soft leading-relaxed;
+  }
+  .prose-tuza h2 {
+    @apply font-serif text-espresso text-2xl mt-10 mb-4;
+  }
+  .prose-tuza p {
+    @apply mb-5 text-[1.0625rem] leading-[1.8];
+  }
+  .prose-tuza ul {
+    @apply mb-5 space-y-2 pl-1;
+  }
+  .prose-tuza li {
+    @apply relative pl-6;
+  }
+  .prose-tuza li::before {
+    content: "";
+    @apply absolute left-0 top-[0.65em] h-1.5 w-1.5 rounded-full bg-clay;
+  }
+  .prose-tuza strong {
+    @apply text-espresso font-semibold;
+  }
+}
+
+@layer components {
+  .container-tuza {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold
+           transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2
+           focus-visible:ring-clay/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream;
+  }
+  .btn-primary {
+    @apply bg-clay text-white shadow-[0_10px_30px_-10px_rgba(194,65,12,0.6)]
+           hover:bg-clay-deep hover:-translate-y-0.5;
+  }
+  .btn-ghost {
+    @apply border border-espresso/15 bg-transparent text-espresso hover:border-clay/40 hover:text-clay;
+  }
+  .btn-white {
+    @apply bg-white text-espresso hover:bg-cream-deep hover:-translate-y-0.5;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-clay;
+  }
+
+  .card {
+    @apply rounded-2xl bg-white shadow-card ring-1 ring-espresso/5 transition-all duration-300;
+  }
+  .card-hover {
+    @apply hover:-translate-y-1 hover:shadow-soft hover:ring-clay/15;
+  }
+
+  .link-underline {
+    @apply relative inline-flex items-center gap-1.5 font-semibold text-clay
+           after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-clay
+           after:transition-all after:duration-300 hover:after:w-full;
+  }
+}
+
+/* Scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
