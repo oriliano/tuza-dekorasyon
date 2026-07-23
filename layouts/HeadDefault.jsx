@@ -9,6 +9,7 @@ export function HeadDefault() {
   const title = data.title || pageContext.seo?.title || site.seoTitle;
   const description = data.description || pageContext.seo?.description || site.seoDescription;
   const path = pageContext.urlPathname || "/";
+  const isPrivatePage = path.startsWith("/panel");
   const canonicalUrl = canonical(path);
   const imagePath = data.project?.image || data.post?.cover || site.logo || "/logo.svg";
   const imageUrl = imagePath.startsWith("http") ? imagePath : canonical(imagePath);
@@ -18,7 +19,7 @@ export function HeadDefault() {
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="theme-color" content="#FAF6F0" />
-      <meta name="robots" content="index, follow, max-image-preview:large" />
+      <meta name="robots" content={isPrivatePage ? "noindex, nofollow" : "index, follow, max-image-preview:large"} />
       <link rel="canonical" href={canonicalUrl} />
       <meta property="og:locale" content="tr_TR" />
       <meta property="og:type" content="website" />
