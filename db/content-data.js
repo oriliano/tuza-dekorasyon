@@ -4,6 +4,7 @@
 export const services = [
   {
     slug: "boya-badana",
+    image: "/projects/dekoratif-duvar-boya.jpeg",
     title: "Boya Badana",
     summary:
       "İç ve dış mekân boya badana uygulamaları ile mekânlarınıza ferah, temiz ve estetik bir görünüm.",
@@ -48,6 +49,7 @@ export const services = [
   },
   {
     slug: "asma-tavan",
+    image: "/projects/ic-mekan-tv-unitesi.jpg",
     title: "Asma Tavan",
     summary:
       "Aydınlatma ve dekorasyonu birleştiren alçıpan, gergi ve dekoratif asma tavan uygulamaları.",
@@ -59,6 +61,7 @@ export const services = [
   },
   {
     slug: "duvar-kagidi",
+    image: "/projects/duvar-kagidi-orkide.jpeg",
     title: "Duvar Kağıdı",
     summary:
       "Kaliteli malzeme ve titiz işçilikle duvarlarınıza karakter katan duvar kağıdı uygulamaları.",
@@ -81,6 +84,7 @@ export const services = [
   },
   {
     slug: "anahtar-teslim-dekorasyon",
+    image: "/projects/ic-mekan-tv-unitesi.jpg",
     title: "Anahtar Teslim Dekorasyon",
     summary:
       "Projelendirmeden uygulamaya kadar tüm sürecin tek elden yönetildiği komple dekorasyon çözümü.",
@@ -95,6 +99,12 @@ export const services = [
 export const projects = [
   {
     slug: "sehitkamil-daire-anahtar-teslim",
+    image: "/projects/ic-mekan-tv-unitesi.jpg",
+    gallery: [
+      "/projects/duvar-kagidi-orkide.jpeg",
+      "/projects/duvar-kagidi-manzara.jpeg",
+      "/projects/dekoratif-duvar-boya.jpeg",
+    ],
     title: "Şehitkamil Daire Anahtar Teslim Yenileme",
     service: "anahtar-teslim-dekorasyon",
     location: "Şehitkamil, Gaziantep",
@@ -125,6 +135,8 @@ export const projects = [
   },
   {
     slug: "salon-dekoratif-boya",
+    image: "/projects/dekoratif-duvar-boya.jpeg",
+    gallery: ["/projects/duvar-kagidi-orkide.jpeg", "/projects/duvar-kagidi-manzara.jpeg"],
     title: "Salon Dekoratif Boya Uygulaması",
     service: "boya-badana",
     location: "Gaziantep",
@@ -135,6 +147,8 @@ export const projects = [
   },
   {
     slug: "yatak-odasi-parke-duvar-kagidi",
+    image: "/projects/duvar-kagidi-orkide.jpeg",
+    gallery: ["/projects/duvar-kagidi-manzara.jpeg"],
     title: "Yatak Odası Parke ve Duvar Kağıdı",
     service: "parke-doseme",
     location: "Şehitkamil, Gaziantep",

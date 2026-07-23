@@ -29,7 +29,17 @@ async function readCollection(name, activeOnly) {
   if (!hasDb) return defaultAdminData[name] || [];
   try {
     await ensureCollectionSeeded(name);
-    const rows = await readers[name]();
+    const defaults = defaultAdminData[name] || [];
+    const rows = (await readers[name]()).map((row) => {
+      const fallback = defaults.find((item) => item.slug === row.slug);
+      if (!fallback) return row;
+      return {
+        ...row,
+        image: row.image || fallback.image,
+        cover: row.cover || fallback.cover,
+        gallery: row.gallery?.length ? row.gallery : fallback.gallery,
+      };
+    });
     return activeOnly
       ? rows.filter((r) => r.active !== false && r.published !== false)
       : rows;

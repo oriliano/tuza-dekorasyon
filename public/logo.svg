@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-labelledby="title desc">
+  <title id="title">Tuza Dekorasyon</title>
+  <desc id="desc">Tuza Dekorasyon marka logosu</desc>
+  <g fill="none" fill-rule="evenodd">
+    <rect width="80" height="80" x="8" y="8" rx="24" fill="#C2410C"/>
+    <path d="M27 28h42v9H53v36H43V37H27z" fill="#FAF6F0"/>
+    <path d="M58 49c8 2 14 8 14 17v7H62v-6c0-5-3-8-9-9z" fill="#DB6B3A"/>
+    <text x="106" y="48" fill="#2A2320" font-family="Georgia, 'Times New Roman', serif" font-size="38" font-weight="700">Tuza</text>
+    <text x="108" y="70" fill="#7A6B60" font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="4">DEKORASYON</text>
+  </g>
+</svg>

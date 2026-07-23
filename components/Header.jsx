@@ -44,16 +44,14 @@ export function Header() {
       }`}
     >
       <div className="container-tuza flex h-[72px] items-center justify-between">
-        <a href="/" className="group flex items-center gap-2.5 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-clay/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream" aria-label={site.name}>
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-clay text-white shadow-[0_6px_18px_-6px_rgba(194,65,12,0.7)] transition-transform group-hover:rotate-3">
-            <span className="font-serif text-lg font-semibold leading-none">T</span>
-          </span>
-          <span className="flex flex-col leading-none">
-            <span className="font-serif text-[1.35rem] font-semibold text-espresso">Tuza</span>
-            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-espresso-muted">
-              Dekorasyon
-            </span>
-          </span>
+        <a href="/" className="group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-clay/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream" aria-label={site.name}>
+          <img
+            src={site.logo || "/logo.svg"}
+            alt="Tuza Dekorasyon"
+            width="180"
+            height="48"
+            className="h-12 w-auto transition-transform duration-300 group-hover:scale-[1.02]"
+          />
         </a>
 
         {/* Masaüstü nav */}

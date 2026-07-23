@@ -21,6 +21,7 @@ export default function Page() {
   const tel = site.phonesIntl?.[0] || site.phones?.[0];
   const featured = projects.filter((p) => p.featured).slice(0, 3);
   const showcaseProjects = (featured.length ? featured : projects).slice(0, 3);
+  const heroProject = showcaseProjects.find((p) => p.image);
   const stats = [
     { value: home.statsProjects, label: home.statsProjectsLabel },
     { value: home.statsYears, label: home.statsYearsLabel },
@@ -92,22 +93,28 @@ export default function Page() {
 
           {/* Sağ görsel kompozisyon */}
           <Reveal delay={200} className="relative">
-            <div className="relative mx-auto max-w-md">
-              <div className="grid grid-cols-2 gap-4">
-                {services.slice(0, 4).map((s, i) => (
-                  <div
-                    key={s.slug}
-                    className={`card flex flex-col gap-3 p-5 ${i % 2 === 1 ? "mt-6" : ""}`}
-                  >
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-clay/10 text-clay">
-                      <Icon name={s.icon} className="h-6 w-6" />
-                    </span>
-                    <span className="text-sm font-semibold leading-tight text-espresso">{s.title}</span>
+            <div className="relative mx-auto max-w-xl pb-8 pl-3 sm:pl-8">
+              <div className="overflow-hidden rounded-[2rem] bg-white p-2 shadow-soft ring-1 ring-espresso/5">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[1.6rem] bg-sand">
+                  <img
+                    src={heroProject?.image || "/projects/ic-mekan-tv-unitesi.jpg"}
+                    alt={heroProject?.title || "Tuza Dekorasyon iç mekân uygulaması"}
+                    width="2048"
+                    height="1152"
+                    fetchPriority="high"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-espresso/80 via-espresso/30 to-transparent px-6 pb-6 pt-16">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-clay-soft">
+                      Uygulamalarımızdan
+                    </p>
+                    <p className="mt-1 font-serif text-xl font-semibold text-white">
+                      {heroProject?.title || "İç mekân dekorasyon uygulaması"}
+                    </p>
                   </div>
-                ))}
+                </div>
               </div>
-              {/* Yüzen puan kartı */}
-              <div className="absolute -bottom-5 -left-5 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-espresso/5">
+              <div className="absolute bottom-0 left-0 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-espresso/5">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-clay text-white">
                   <Icon name="shield" className="h-6 w-6" />
                 </div>
@@ -117,7 +124,7 @@ export default function Page() {
                 </div>
               </div>
               {stats[0] && (
-                <div className="absolute -right-4 -top-4 rounded-2xl bg-espresso px-5 py-4 text-center shadow-soft">
+                <div className="absolute -right-2 -top-4 rounded-2xl bg-espresso px-5 py-4 text-center shadow-soft sm:-right-4">
                   <p className="font-serif text-2xl font-semibold text-clay-soft">{stats[0].value}</p>
                   <p className="text-[0.7rem] uppercase tracking-wide text-cream/70">{stats[0].label}</p>
                 </div>

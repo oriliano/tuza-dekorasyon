@@ -12,6 +12,9 @@ const isProduction = process.env.NODE_ENV === "production";
 const uploadDir = process.env.UPLOAD_DIR || (isProduction ? "/data/uploads" : path.join(process.cwd(), "public/uploads"));
 const publicUploadBase = process.env.UPLOAD_PUBLIC_PATH || "/uploads";
 const STORAGE_BUDGET_BYTES = Number(process.env.STORAGE_BUDGET_BYTES || 450 * 1024 * 1024);
+const contactAttempts = new Map();
+const CONTACT_WINDOW_MS = 10 * 60 * 1000;
+const CONTACT_LIMIT = 5;
 
 // Panelin "koleksiyonu tümüyle kaydet" akışı tabloyu temizleyip yeniden yazar.
 // Anahtar kelimeyi kaynakta parçalı tutuyoruz (statik analiz yanlış-pozitifi için).
@@ -165,19 +168,48 @@ export function mountAdminApi(app) {
 
   // Public: iletişim formu → messages tablosu.
   app.post("/api/contact", async (req, res) => {
-    const { name, phone, email, service, message } = req.body || {};
-    if (!name || !message) {
-      res.status(400).json({ ok: false, error: "Ad ve mesaj alanları zorunludur." });
+    const ip = req.ip || req.socket?.remoteAddress || "unknown";
+    const now = Date.now();
+    const recent = (contactAttempts.get(ip) || []).filter((time) => now - time < CONTACT_WINDOW_MS);
+    if (recent.length >= CONTACT_LIMIT) {
+      res.status(429).json({ ok: false, error: "Çok fazla deneme yaptınız. Lütfen biraz sonra tekrar deneyin." });
       return;
     }
-    if (hasDb) {
-      try {
-        await sql`INSERT INTO messages (name, phone, email, service, message)
-          VALUES (${name}, ${phone || null}, ${email || null}, ${service || null}, ${message})`;
-      } catch (err) {
-        res.status(500).json({ ok: false, error: "Mesaj kaydedilemedi." });
-        return;
-      }
+    contactAttempts.set(ip, [...recent, now]);
+
+    const clean = (value, max) => String(value || "").trim().slice(0, max);
+    const name = clean(req.body?.name, 100);
+    const phone = clean(req.body?.phone, 30);
+    const email = clean(req.body?.email, 160);
+    const service = clean(req.body?.service, 120);
+    const message = clean(req.body?.message, 2000);
+    const website = clean(req.body?.website, 200);
+
+    if (website) return res.status(400).json({ ok: false, error: "Geçersiz form gönderimi." });
+    if (name.length < 2 || message.length < 10 || (!phone && !email)) {
+      res.status(400).json({
+        ok: false,
+        error: "Ad, en az bir iletişim bilgisi ve en az 10 karakterlik mesaj gereklidir.",
+      });
+      return;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      res.status(400).json({ ok: false, error: "Geçerli bir e-posta adresi girin." });
+      return;
+    }
+    if (!hasDb) {
+      res.status(503).json({
+        ok: false,
+        error: "Form şu anda kullanılamıyor. Lütfen telefon veya WhatsApp ile ulaşın.",
+      });
+      return;
+    }
+    try {
+      await sql`INSERT INTO messages (name, phone, email, service, message)
+        VALUES (${name}, ${phone || null}, ${email || null}, ${service || null}, ${message})`;
+    } catch {
+      res.status(500).json({ ok: false, error: "Mesaj kaydedilemedi. Lütfen WhatsApp ile ulaşın." });
+      return;
     }
     res.json({ ok: true });
   });

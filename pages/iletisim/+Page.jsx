@@ -13,7 +13,8 @@ export default function Page() {
     site.address?.mapQuery || site.name
   )}`;
 
-  const [form, setForm] = useState({ name: "", phone: "", email: "", service: "", message: "" });
+  const emptyForm = { name: "", phone: "", email: "", service: "", message: "", website: "" };
+  const [form, setForm] = useState(emptyForm);
   const [status, setStatus] = useState("idle"); // idle | sending | ok | error
   const [error, setError] = useState("");
 
@@ -32,7 +33,7 @@ export default function Page() {
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
         setStatus("ok");
-        setForm({ name: "", phone: "", email: "", service: "", message: "" });
+        setForm(emptyForm);
       } else {
         setStatus("error");
         setError(data.error || "Mesaj gönderilemedi. Lütfen tekrar deneyin.");
@@ -44,6 +45,7 @@ export default function Page() {
   }
 
   const contactItems = [
+    { icon: "shield", label: "Yetkili", value: site.owner || "Olcay Tuza" },
     { icon: "phone", label: "Telefon", value: site.phones?.[0], href: `tel:${tel}` },
     { icon: "whatsapp", label: "WhatsApp", value: "Mesaj gönderin", href: `https://wa.me/${wa}` },
     { icon: "mail", label: "E-posta", value: site.email, href: `mailto:${site.email}` },
@@ -119,7 +121,7 @@ export default function Page() {
                   <h2 className="text-xl font-semibold text-espresso">Teklif Formu</h2>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <Field label="Ad Soyad *" value={form.name} onChange={update("name")} required placeholder="Adınız" />
-                    <Field label="Telefon" value={form.phone} onChange={update("phone")} type="tel" placeholder="05xx xxx xx xx" />
+                    <Field label="Telefon *" value={form.phone} onChange={update("phone")} type="tel" required placeholder="05xx xxx xx xx" />
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <Field label="E-posta" value={form.email} onChange={update("email")} type="email" placeholder="ornek@mail.com" />
@@ -148,9 +150,31 @@ export default function Page() {
                       className="field-control resize-none"
                     />
                   </div>
+                  <div className="absolute -left-[9999px]" aria-hidden="true">
+                    <label htmlFor="website">Website</label>
+                    <input
+                      id="website"
+                      name="website"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={form.website}
+                      onChange={update("website")}
+                    />
+                  </div>
 
                   {status === "error" && (
-                    <p className="rounded-xl bg-clay/10 px-4 py-3 text-sm font-medium text-clay-deep">{error}</p>
+                    <div className="rounded-xl bg-clay/10 px-4 py-3 text-sm font-medium text-clay-deep">
+                      <p>{error}</p>
+                      <a
+                        href={`https://wa.me/${wa}?text=${encodeURIComponent("Merhaba, ücretsiz keşif hakkında bilgi almak istiyorum.")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-flex underline underline-offset-4"
+                      >
+                        WhatsApp ile hemen yazın
+                      </a>
+                    </div>
                   )}
 
                   <button type="submit" disabled={status === "sending"} className="btn btn-primary w-full disabled:opacity-60">
