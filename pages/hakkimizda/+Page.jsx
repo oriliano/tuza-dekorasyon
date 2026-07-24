@@ -2,7 +2,7 @@ import React from "react";
 import { useData } from "vike-react/useData";
 import { site as staticSite } from "../../lib/site.js";
 import { Icon } from "../../components/Icon.jsx";
-import { Reveal } from "../../components/Reveal.jsx";
+import { Reveal, Stagger, StaggerItem } from "../../components/motion.jsx";
 import { PageHero } from "../../components/PageHero.jsx";
 import { CtaBand } from "../../components/CtaBand.jsx";
 
@@ -66,9 +66,9 @@ export default function Page() {
                 Değerlerimiz
               </h2>
             </Reveal>
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <Stagger className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {values.map((v, i) => (
-                <Reveal key={i} delay={(i % 4) * 70}>
+                <StaggerItem key={i} className="h-full">
                   <div className="card h-full p-6 text-center">
                     <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-clay/10 text-clay">
                       <Icon name="sparkle" className="h-6 w-6" />
@@ -76,9 +76,9 @@ export default function Page() {
                     <h3 className="mt-4 text-lg font-semibold text-espresso">{v.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-espresso-soft">{v.text}</p>
                   </div>
-                </Reveal>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </div>
         </section>
       )}

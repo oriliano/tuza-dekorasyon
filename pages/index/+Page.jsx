@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useData } from "vike-react/useData";
 import { site as staticSite } from "../../lib/site.js";
 import { localBusinessJsonLd } from "../../lib/seo.js";
 import { Icon } from "../../components/Icon.jsx";
-import { Reveal } from "../../components/Reveal.jsx";
+import {
+  DURATION,
+  EASE_OUT,
+  SPRING,
+  Stagger,
+  StaggerItem,
+  useMotionSafe,
+} from "../../components/motion.jsx";
+import { AnimatedNumber } from "../../components/AnimatedNumber.jsx";
+import { Marquee } from "../../components/Marquee.jsx";
 import { SectionHeading } from "../../components/SectionHeading.jsx";
 import { ServiceCard, ProjectCard, PostCard } from "../../components/Cards.jsx";
 import { CtaBand } from "../../components/CtaBand.jsx";
@@ -18,6 +28,7 @@ const steps = [
 
 export default function Page() {
   const { site = staticSite, home = {}, services = [], projects = [], posts = [], about = {} } = useData();
+  const safe = useMotionSafe();
   const tel = site.phonesIntl?.[0] || site.phones?.[0];
   const featured = projects.filter((p) => p.featured).slice(0, 3);
   const showcaseProjects = (featured.length ? featured : projects).slice(0, 3);
@@ -28,12 +39,38 @@ export default function Page() {
     { value: home.statsClients, label: home.statsClientsLabel },
   ].filter((s) => s.value);
 
+  // Hero ekranın üstünde: scroll beklemeden, yüklenir yüklenmez kademeli girer.
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  // Görsel kompozisyon metinden yavaş kayar — derinlik hissi, sarsıntı yok.
+  const artY = useTransform(scrollYProgress, [0, 1], [0, -48]);
+  const badgeY = useTransform(scrollYProgress, [0, 1], [0, -16]);
+
+  const heroStagger = safe
+    ? {
+        initial: "hidden",
+        animate: "visible",
+        variants: { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } },
+      }
+    : {};
+  const heroItem = safe
+    ? {
+        variants: {
+          hidden: { opacity: 0, y: 22 },
+          visible: { opacity: 1, y: 0, transition: { duration: DURATION.reveal, ease: EASE_OUT } },
+        },
+      }
+    : {};
+
   return (
     <>
       <JsonLd data={localBusinessJsonLd(site, services)} />
 
       {/* ================= HERO ================= */}
-      <section className="relative overflow-hidden">
+      <section ref={heroRef} className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-cream via-cream to-cream-deep" />
         <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-clay/10 blur-3xl" />
         <div className="pointer-events-none absolute right-0 top-40 h-80 w-80 rounded-full bg-clay-soft/10 blur-3xl" />
@@ -48,52 +85,64 @@ export default function Page() {
 
         <div className="container-tuza relative grid items-center gap-12 pb-16 pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-20">
           {/* Sol metin */}
-          <div>
-            <Reveal>
-              <span className="inline-flex items-center gap-2 rounded-full border border-clay/20 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-clay backdrop-blur-sm">
-                <Icon name="location" className="h-3.5 w-3.5" />
-                {home.heroBadge || site.locationLabel}
+          <motion.div {...heroStagger}>
+            <motion.span
+              {...heroItem}
+              className="inline-flex items-center gap-2 rounded-full border border-clay/20 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-clay backdrop-blur-sm"
+            >
+              <Icon name="location" className="h-3.5 w-3.5" />
+              {home.heroBadge || site.locationLabel}
+            </motion.span>
+            <motion.h1
+              {...heroItem}
+              className="mt-6 text-balance text-4xl font-semibold leading-[1.08] text-espresso sm:text-5xl lg:text-[3.4rem]"
+            >
+              {home.heroTitle || site.slogan}
+            </motion.h1>
+            <motion.p {...heroItem} className="mt-6 max-w-xl text-lg leading-relaxed text-espresso-soft">
+              {home.heroSubtitle}
+            </motion.p>
+            <motion.div {...heroItem} className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <motion.a
+                href="/iletisim"
+                className="btn btn-primary"
+                whileHover={safe ? { y: -2, transition: SPRING } : undefined}
+                whileTap={safe ? { scale: 0.97, transition: SPRING } : undefined}
+              >
+                {home.heroPrimaryCta || "Ücretsiz Keşif İste"}
+                <Icon name="arrow" className="h-4 w-4" />
+              </motion.a>
+              <motion.a
+                href="/hizmetler"
+                className="btn btn-ghost"
+                whileHover={safe ? { y: -2, transition: SPRING } : undefined}
+                whileTap={safe ? { scale: 0.97, transition: SPRING } : undefined}
+              >
+                {home.heroSecondaryCta || "Hizmetlerimiz"}
+              </motion.a>
+            </motion.div>
+            <motion.div
+              {...heroItem}
+              className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-espresso-muted"
+            >
+              <a href={`tel:${tel}`} className="flex items-center gap-2 font-semibold text-espresso hover:text-clay">
+                <Icon name="phone" className="h-4 w-4 text-clay" />
+                {site.phones?.[0]}
+              </a>
+              <span className="hidden h-4 w-px bg-espresso/15 sm:block" />
+              <span className="flex items-center gap-2">
+                <Icon name="clock" className="h-4 w-4 text-clay" />
+                {site.hours}
               </span>
-            </Reveal>
-            <Reveal delay={80}>
-              <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.08] text-espresso sm:text-5xl lg:text-[3.4rem]">
-                {home.heroTitle || site.slogan}
-              </h1>
-            </Reveal>
-            <Reveal delay={160}>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-espresso-soft">
-                {home.heroSubtitle}
-              </p>
-            </Reveal>
-            <Reveal delay={240}>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a href="/iletisim" className="btn btn-primary">
-                  {home.heroPrimaryCta || "Ücretsiz Keşif İste"}
-                  <Icon name="arrow" className="h-4 w-4" />
-                </a>
-                <a href="/hizmetler" className="btn btn-ghost">
-                  {home.heroSecondaryCta || "Hizmetlerimiz"}
-                </a>
-              </div>
-            </Reveal>
-            <Reveal delay={320}>
-              <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-espresso-muted">
-                <a href={`tel:${tel}`} className="flex items-center gap-2 font-semibold text-espresso hover:text-clay">
-                  <Icon name="phone" className="h-4 w-4 text-clay" />
-                  {site.phones?.[0]}
-                </a>
-                <span className="hidden h-4 w-px bg-espresso/15 sm:block" />
-                <span className="flex items-center gap-2">
-                  <Icon name="clock" className="h-4 w-4 text-clay" />
-                  {site.hours}
-                </span>
-              </div>
-            </Reveal>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          {/* Sağ görsel kompozisyon */}
-          <Reveal delay={200} className="relative">
-            <div className="relative mx-auto max-w-xl pb-8 pl-3 sm:pl-8">
+          {/* Sağ görsel kompozisyon — LCP görseli hiç solmaz, yalnızca kayar. */}
+          <div className="relative">
+            <motion.div
+              className="relative mx-auto max-w-xl pb-8 pl-3 sm:pl-8"
+              style={safe ? { y: artY } : undefined}
+            >
               <div className="overflow-hidden rounded-[2rem] bg-white p-2 shadow-soft ring-1 ring-espresso/5">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[1.6rem] bg-sand">
                   <img
@@ -114,39 +163,77 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="absolute bottom-0 left-0 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-espresso/5">
+
+              <motion.div
+                className="absolute bottom-0 left-0 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-espresso/5"
+                style={safe ? { y: badgeY } : undefined}
+                initial={safe ? { opacity: 0, x: -20, scale: 0.9 } : false}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                  transition: { delay: 0.45, duration: DURATION.slow, ease: EASE_OUT },
+                }}
+              >
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-clay text-white">
                   <Icon name="shield" className="h-6 w-6" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-espresso">Garantili İşçilik</p>
-                  <p className="text-xs text-espresso-muted">Titiz & şeffaf hizmet</p>
+                  <p className="text-xs text-espresso-muted">Titiz &amp; şeffaf hizmet</p>
                 </div>
-              </div>
+              </motion.div>
+
               {stats[0] && (
-                <div className="absolute -right-2 -top-4 rounded-2xl bg-espresso px-5 py-4 text-center shadow-soft sm:-right-4">
-                  <p className="font-serif text-2xl font-semibold text-clay-soft">{stats[0].value}</p>
+                <motion.div
+                  className="absolute -right-2 -top-4 rounded-2xl bg-espresso px-5 py-4 text-center shadow-soft sm:-right-4"
+                  style={safe ? { y: badgeY } : undefined}
+                  initial={safe ? { opacity: 0, scale: 0.9 } : false}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    transition: { delay: 0.35, duration: DURATION.slow, ease: EASE_OUT },
+                  }}
+                >
+                  <p className="font-serif text-2xl font-semibold text-clay-soft">
+                    <AnimatedNumber value={stats[0].value} />
+                  </p>
                   <p className="text-[0.7rem] uppercase tracking-wide text-cream/70">{stats[0].label}</p>
-                </div>
+                </motion.div>
               )}
-            </div>
-          </Reveal>
+            </motion.div>
+          </div>
         </div>
 
         {/* İstatistik şeridi */}
         {stats.length > 0 && (
           <div className="container-tuza relative pb-4">
-            <div className="grid gap-4 rounded-2xl border border-espresso/5 bg-white/70 p-6 backdrop-blur-sm sm:grid-cols-3 sm:p-8">
+            <Stagger
+              className="grid gap-4 rounded-2xl border border-espresso/5 bg-white/70 p-6 backdrop-blur-sm sm:grid-cols-3 sm:p-8"
+              stagger={0.1}
+            >
               {stats.map((s, i) => (
-                <div key={i} className={`text-center sm:text-left ${i > 0 ? "sm:border-l sm:border-espresso/10 sm:pl-8" : ""}`}>
-                  <p className="font-serif text-3xl font-semibold text-clay sm:text-4xl">{s.value}</p>
+                <StaggerItem
+                  key={i}
+                  className={`text-center sm:text-left ${i > 0 ? "sm:border-l sm:border-espresso/10 sm:pl-8" : ""}`}
+                >
+                  <p className="font-serif text-3xl font-semibold text-clay sm:text-4xl">
+                    <AnimatedNumber value={s.value} />
+                  </p>
                   <p className="mt-1 text-sm text-espresso-soft">{s.label}</p>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </div>
         )}
       </section>
+
+      {/* ============ HİZMET ŞERİDİ (kayan) ============ */}
+      {services.length > 0 && (
+        <div className="border-y border-espresso/5 bg-cream-deep py-5">
+          <Marquee items={services.map((s) => s.title)} baseVelocity={2.2} />
+        </div>
+      )}
 
       {/* ================= HİZMETLER ================= */}
       <section className="py-20 sm:py-24">
@@ -156,13 +243,13 @@ export default function Page() {
             title="Yaşam alanlarınız için uçtan uca çözümler"
             text="Boyadan mantolamaya, alçıpandan parkeye kadar tüm tadilat ve dekorasyon işlerinizi tek elden, uzman ekibimizle karşılıyoruz."
           />
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {services.map((s, i) => (
-              <Reveal key={s.slug} delay={(i % 4) * 70}>
+              <StaggerItem key={s.slug} className="h-full">
                 <ServiceCard service={s} index={i} />
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -175,9 +262,9 @@ export default function Page() {
               title={about.title || "Titiz işçilik, şeffaf süreç"}
               text={about.lead}
             />
-            <div className="grid gap-5 sm:grid-cols-2">
+            <Stagger className="grid gap-5 sm:grid-cols-2">
               {about.values.map((v, i) => (
-                <Reveal key={i} delay={(i % 2) * 90}>
+                <StaggerItem key={i} className="h-full">
                   <div className="card h-full p-6">
                     <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-clay/10 text-clay">
                       <Icon name="check" className="h-6 w-6" />
@@ -185,9 +272,9 @@ export default function Page() {
                     <h3 className="mt-4 text-lg font-semibold text-espresso">{v.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-espresso-soft">{v.text}</p>
                   </div>
-                </Reveal>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </div>
         </section>
       )}
@@ -207,13 +294,13 @@ export default function Page() {
                 <Icon name="arrow" className="h-4 w-4" />
               </a>
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {showcaseProjects.map((p, i) => (
-                <Reveal key={p.slug} delay={(i % 3) * 80}>
+                <StaggerItem key={p.slug} className="h-full">
                   <ProjectCard project={p} index={i} />
-                </Reveal>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
             <div className="mt-8 text-center sm:hidden">
               <a href="/referanslar" className="btn btn-ghost">
                 Tümünü Gör
@@ -232,17 +319,17 @@ export default function Page() {
             eyebrow="Nasıl Çalışıyoruz"
             title="Keşiften teslime dört adımda"
           />
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((st, i) => (
-              <Reveal key={st.n} delay={i * 80}>
+          <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" stagger={0.09}>
+            {steps.map((st) => (
+              <StaggerItem key={st.n} className="h-full">
                 <div className="relative h-full rounded-2xl bg-white p-6 shadow-card ring-1 ring-espresso/5">
                   <span className="font-serif text-4xl font-semibold text-sand-dark">{st.n}</span>
                   <h3 className="mt-3 text-lg font-semibold text-espresso">{st.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-espresso-soft">{st.text}</p>
                 </div>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -257,13 +344,13 @@ export default function Page() {
                 <Icon name="arrow" className="h-4 w-4" />
               </a>
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.slice(0, 3).map((p, i) => (
-                <Reveal key={p.slug} delay={(i % 3) * 80}>
+                <StaggerItem key={p.slug} className="h-full">
                   <PostCard post={p} index={i} />
-                </Reveal>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           </div>
         </section>
       )}

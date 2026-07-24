@@ -84,8 +84,10 @@
            focus:outline-none focus-visible:ring-2 focus-visible:ring-clay/40
            focus-visible:ring-offset-2 focus-visible:ring-offset-cream;
   }
+  /* Yükselme hareketini Framer Motion yürütür (yaylı his); CSS yalnızca
+     yüzey derinliğini değiştirir. İkisi aynı transform'u yönetmez. */
   .card-hover {
-    @apply hover:-translate-y-1 hover:shadow-soft hover:ring-clay/15;
+    @apply hover:shadow-soft hover:ring-clay/15;
   }
 
   /* Navigasyon linki — tutarlı focus + aktif göstergesi */
@@ -94,12 +96,10 @@
            focus:outline-none focus-visible:ring-2 focus-visible:ring-clay/40
            focus-visible:ring-offset-2 focus-visible:ring-offset-cream;
   }
+  /* Aktif göstergesi Header'da motion.span + layoutId ile çizilir —
+     sayfa değişince alt çizgi yeni linke kayar. */
   .nav-link-active {
     @apply text-clay;
-  }
-  .nav-link-active::after {
-    content: "";
-    @apply absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-clay;
   }
   .nav-link-idle {
     @apply text-espresso-soft hover:text-clay;
@@ -120,18 +120,15 @@
   }
 }
 
-/* Scroll-reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
+/* Scroll-reveal artık Framer Motion ile yürüyor (components/motion.jsx).
+   Hareket tercihi kapalıysa primitifler animasyonu hiç kurmaz; burada yalnızca
+   tarayıcı seviyesindeki yumuşak kaydırma geri alınır. */
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

@@ -33,6 +33,10 @@ export function HeadDefault() {
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={imageUrl} />
       <link rel="icon" href={site.favicon || "/favicon.svg"} type="image/svg+xml" />
+      {/* Scroll-reveal öğeleri gizli başlar; JS yoksa hepsi görünür kalmalı. */}
+      <noscript>
+        <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
+      </noscript>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       <link

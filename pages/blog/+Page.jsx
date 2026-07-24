@@ -2,7 +2,7 @@ import React from "react";
 import { useData } from "vike-react/useData";
 import { PageHero } from "../../components/PageHero.jsx";
 import { PostCard } from "../../components/Cards.jsx";
-import { Reveal } from "../../components/Reveal.jsx";
+import { Stagger, StaggerItem } from "../../components/motion.jsx";
 import { CtaBand } from "../../components/CtaBand.jsx";
 
 export default function Page() {
@@ -19,13 +19,13 @@ export default function Page() {
       <section className="py-16 sm:py-20">
         <div className="container-tuza">
           {posts.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((p, i) => (
-                <Reveal key={p.slug} delay={(i % 3) * 70}>
+                <StaggerItem key={p.slug} className="h-full">
                   <PostCard post={p} index={i} />
-                </Reveal>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
           ) : (
             <p className="py-12 text-center text-espresso-muted">Henüz yazı eklenmedi.</p>
           )}

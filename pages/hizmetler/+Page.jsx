@@ -3,7 +3,7 @@ import { useData } from "vike-react/useData";
 import { site as staticSite } from "../../lib/site.js";
 import { PageHero } from "../../components/PageHero.jsx";
 import { ServiceCard } from "../../components/Cards.jsx";
-import { Reveal } from "../../components/Reveal.jsx";
+import { Stagger, StaggerItem } from "../../components/motion.jsx";
 import { CtaBand } from "../../components/CtaBand.jsx";
 
 export default function Page() {
@@ -21,13 +21,13 @@ export default function Page() {
       />
 
       <section className="py-16 sm:py-20">
-        <div className="container-tuza grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className="container-tuza grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s, i) => (
-            <Reveal key={s.slug} delay={(i % 3) * 70}>
+            <StaggerItem key={s.slug} className="h-full">
               <ServiceCard service={s} index={i} />
-            </Reveal>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
       <section className="pb-24">
